@@ -1,0 +1,118 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  font-size: clamp(12px, 1.5vw + 3px, 18px);
+}
+
+body {
+  background-color: #121212;
+  color: white;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+body.super-center {
+  min-height: 100vh;
+}
+
+.super-center {
+  display: grid;
+  place-items: center; /* for centring a single element */
+  place-content: center; /* for centring multiple elements */
+}
+
+main {
+  width: min(80vw, 40em);
+  border: 3px solid #f1f1f1;
+  border-radius: 1em;
+  box-shadow: 0 0 12px 2px #f1f1f1;
+  margin-block: 5vmin;
+
+  background-color: #3333;
+
+  font-weight: bold;
+  text-align: center;
+  overflow: hidden;
+}
+
+header {
+  padding: 0 1em 1em;
+  background-color: #666;
+}
+
+img {
+  width: min(100%, 512px);
+}
+
+form {
+  display: flex;
+  flex-flow: column;
+  gap: 0.5em;
+
+  padding: 1.5em;
+}
+
+form > * + :is(label, fieldset, button) {
+  margin-top: 0.5em;
+}
+
+form :is(input, select, button) {
+  padding: 0.6em 1em;
+  border: none;
+  border-radius: 0.5em;
+  background-color: gray;
+  font-weight: bold;
+
+  transition: all 0.2s ease;
+}
+
+form :is(input, select, button):is(:hover, :focus) {
+  background-color: lightgray;
+  outline: none;
+}
+
+form select option[disabled]:first-child {
+  display: none;
+}
+
+form fieldset:first-of-type {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+
+  border: none;
+}
+
+form fieldset:first-of-type.hide {
+  display: none;
+}
+
+form fieldset:last-of-type {
+  display: flex;
+  justify-content: space-evenly;
+
+  padding-block: 0.75em 1em;
+  border-radius: 0.5em;
+}
+
+form fieldset:last-of-type label {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+form button {
+  padding: 1em 2em;
+  align-self: center;
+  cursor: pointer;
+
+  box-shadow: 0 0 4px 1px #f1f1f1;
+}
+
+form button:hover {
+  box-shadow: 0 0 6px 2px #f1f1f1;
+  transform: scale(1.1);
+}
