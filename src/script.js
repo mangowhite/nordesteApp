@@ -12,40 +12,50 @@ document.querySelector("#select-mudanca").addEventListener(
   },
   { passive: true }
 );
-
-const submit = document.querySelector('[type="form"]').addEventListener();
 // Google docs API
-import 'dotenv/config';
-import gapi from "https://apis.google.com/js/api.js";
 
-// Client ID and API key from the Developer Console
-require("dotenv").config();
-const CLIENT_ID = process.env.CLIENTID;
-const API_KEY = process.env.APIKEY;
+import data from './local.json' assert {type: "json"};
+
+const CLIENT_ID = '921739400001-b0pee66k2t6d4ngjfdm186h64ns2fisl.apps.googleusercontent.com';
+const API_KEY = 'AIzaSyAVyCKXswoOC-JM_bc8uILkHyAebDz5bLg';
+
+const form = document.querySelector("form")
+var formData;
+form.addEventListener(
+  "submit", () => {
+    formData = new FormData(form)
+    authenticate().then(loadClient).then(execute);
+  }
+);
 
 function authenticate() {
   return gapi.auth2.getAuthInstance()
-      .signIn({scope: "https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file"})
-      .then(function() { console.log("Sign-in successful"); },
-            function(err) { console.error("Error signing in", err); });
+    .signIn({ scope: "https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file" })
+    .then(function () { console.log("Sign-in successful"); },
+      function (err) { console.error("Error signing in", err); });
 }
 function loadClient() {
-  gapi.client.setApiKey("YOUR_API_KEY");
+  gapi.client.setApiKey(API_KEY);
   return gapi.client.load("https://docs.googleapis.com/$discovery/rest?version=v1")
-      .then(function() { console.log("GAPI client loaded for API"); },
-            function(err) { console.error("Error loading GAPI client for API", err); });
+    .then(function () { console.log("GAPI client loaded for API"); },
+      function (err) { console.error("Error loading GAPI client for API", err); });
 }
-// Make sure the client is loaded and sign-in is complete before calling this method.
 function execute() {
+  const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' }
+  const creationDate = new Date()
+  const creationDateFormatted = creationDate.toLocaleDateString('pt-br', dateOptions);
   return gapi.client.docs.documents.create({
-    "resource": {}
+    "resource": {
+      "title": formData.get('name') + " " + formData.get('origem') + " X " + formData.get('destino'),
+      "body": data.body
+    },
   })
-      .then(function(response) {
-              // Handle the results here (response.result has the parsed body).
-              console.log("Response", response);
-            },
-            function(err) { console.error("Execute error", err); });
+    .then(function (response) {
+      // Handle the results here (response.result has the parsed body).
+      console.log("Response", response);
+    },
+      function (err) { console.error("Execute error", err); });
 }
-gapi.load("client:auth2", function() {
-  gapi.auth2.init({client_id: "YOUR_CLIENT_ID"});
+gapi.load("client:auth2", function () {
+  gapi.auth2.init({ client_id: CLIENT_ID });
 });

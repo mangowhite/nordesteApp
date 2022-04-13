@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Static Template</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://apis.google.com/js/api.js" async defer></script>
     <script src="script.js" type=module></script>
   </head>
   <body class="super-center">
@@ -16,9 +17,9 @@
           Formulário de Orçamentos
         </h1>
       </header>
-      <form action="/src/script.js">
+      <form target="_blank">
         <label for="input-nome">Nome do Cliente</label>
-        <input id="input-nome" name="nomo" required />
+        <input id="input-nome" name="nome" required />
 
         <label for="input-destino">Destino</label>
         <input id="input-destino" name="destino" required />
@@ -70,7 +71,7 @@
           </label>
         </fieldset>
 
-        <button name="submit" />Gerar Orçamento</button>
+        <button name="submit">Gerar Orçamento</button>
       </form>
     </main>
   </body>
