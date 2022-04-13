@@ -1,78 +1,116 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Static Template</title>
-    <link rel="stylesheet" href="styles.css" />
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script src="script.js" type=module></script>
-  </head>
-  <body class="super-center">
-    <main>
-      <header>
-        <img src="https://i.imgur.com/xCtLLOb.png" alt="logo" />
-        <h1>
-          Formulário de Orçamentos
-        </h1>
-      </header>
-      <form target="_blank">
-        <label for="input-nome">Nome do Cliente</label>
-        <input id="input-nome" name="nome" required />
 
-        <label for="input-destino">Destino</label>
-        <input id="input-destino" name="destino" required />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Static Template</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://apis.google.com/js/api.js"></script>
+  <script>
+    /**
+     * Sample JavaScript code for docs.documents.create
+     * See instructions for running APIs Explorer code samples locally:
+     * https://developers.google.com/explorer-help/code-samples#javascript
+     */
+    function authenticate() {
+      return gapi.auth2.getAuthInstance()
+        .signIn({ scope: "https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file" })
+        .then(function () { console.log("Sign-in successful"); },
+          function (err) { console.error("Error signing in", err); });
+    }
+    function loadClient() {
+      gapi.client.setApiKey("AIzaSyAVyCKXswoOC-JM_bc8uILkHyAebDz5bLg");
+      return gapi.client.load("https://docs.googleapis.com/$discovery/rest?version=v1")
+        .then(function () { console.log("GAPI client loaded for API"); },
+          function (err) { console.error("Error loading GAPI client for API", err); });
+    }
+    // Make sure the client is loaded and sign-in is complete before calling this method.
+    function execute(title) {
+      return gapi.client.docs.documents.create({
+        "resource": {
+          "title": title
+        }
+      })
+        .then(function (response) {
+          // Handle the results here (response.result has the parsed body).
+          console.log("Response", response);
+        },
+          function (err) { console.error("Execute error", err); });
+    }
+    gapi.load("client:auth2", function () {
+      gapi.auth2.init({ client_id: "921739400001-b0pee66k2t6d4ngjfdm186h64ns2fisl.apps.googleusercontent.com" });
+    }); 
+  </script>
+  <script src="script.js" type=module></script>
+</head>
 
-        <label for="input-origem">Origem</label>
-        <input id="input-origem" name="origem" required />
+<body class="super-center">
+  <main>
+    <header>
+      <img src="https://i.imgur.com/xCtLLOb.png" alt="logo" />
+      <h1>
+        Formulário de Orçamentos
+      </h1>
+    </header>
+    <form id="form">
+      <label for="input-nome">Nome do Cliente</label>
+      <input id="input-nome" name="nome" required />
 
-        <label for="input-numero">Número (Opcional)</label>
-        <input id="input-numero" name="numero" />
+      <label for="input-destino">Destino</label>
+      <input id="input-destino" name="destino" required />
 
-        <label for="input-email">Email (Opcional)</label>
-        <input id="input-email" name="email" type="email" />
+      <label for="input-origem">Origem</label>
+      <input id="input-origem" name="origem" required />
 
-        <label for="input-valor">Valor em R$</label>
-        <input id="input-valor" name="valor" required />
+      <label for="input-numero">Número (Opcional)</label>
+      <input id="input-numero" name="numero" />
 
-        <label for="select-mudanca">Tipo de Mudança</label>
-        <select id="select-mudanca" name="mudanca" required>
-          <option selected disabled></option>
-          <option>Exclusiva</option>
-          <option>Compartilhada</option>
-          <option>Local</option>
+      <label for="input-email">Email (Opcional)</label>
+      <input id="input-email" name="email" type="email" />
+
+      <label for="input-valor">Valor em R$</label>
+      <input id="input-valor" name="valor" required />
+
+      <label for="select-mudanca">Tipo de Mudança</label>
+      <select id="select-mudanca" name="mudanca" required>
+        <option selected disabled></option>
+        <option>Exclusiva</option>
+        <option>Compartilhada</option>
+        <option>Local</option>
+      </select>
+
+      <fieldset class="hide">
+        <label for="select-transporte">Tipo de Transporte</label>
+        <select id="select-transporte" name="transporte">
+          <option disabled selected></option>
+          <option>Interestadual</option>
+          <option>Intermunicipal</option>
         </select>
+      </fieldset>
 
-        <fieldset class="hide">
-          <label for="select-transporte">Tipo de Transporte</label>
-          <select id="select-transporte" name="transporte">
-            <option disabled selected></option>
-            <option>Interestadual</option>
-            <option>Intermunicipal</option>
-          </select>
-        </fieldset>
+      <fieldset>
+        <legend>Orçamento planejado através de:</legend>
+        <label>
+          <input type="radio" name="localDeEnvio" value="vistoria" />
+          <span>Vistoria</span>
+        </label>
 
-        <fieldset>
-          <legend>Orçamento planejado através de:</legend>
-          <label>
-            <input type="radio" name="localDeEnvio" value="vistoria" />
-            <span>Vistoria</span>
-          </label>
+        <label>
+          <input type="radio" name="localDeEnvio" value="email" />
+          <span>E-mail</span>
+        </label>
 
-          <label>
-            <input type="radio" name="localDeEnvio" value="email" />
-            <span>E-mail</span>
-          </label>
+        <label>
+          <input type="radio" name="localDeEnvio" value="whatsapp" />
+          <span>WhatApp</span>
+        </label>
 
-          <label>
-            <input type="radio" name="localDeEnvio" value="whatsapp" />
-            <span>WhatApp</span>
-          </label>
-        </fieldset>
-
-        <button name="submit">Gerar Orçamento</button>
-      </form>
-    </main>
-  </body>
+      </fieldset>
+      <button type= "button" onclick="authenticate().then(loadClient)">Autenticar</button>
+      <button type="submit" name="submit">Gerar Orçamento</button>
+    </form>
+  </main>
+</body>
 </html>
