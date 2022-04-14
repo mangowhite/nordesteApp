@@ -1,12 +1,12 @@
 // Script to show/hide selector.
-const selectTransporte = document.querySelector("#select-transporte");
-document.querySelector("#select-mudanca").addEventListener(
-  "change",
+const selectTransporte = document.querySelector('#select-transporte');
+document.querySelector('#select-mudanca').addEventListener(
+  'change',
   (e) => {
-    const isLocal = e.target.selectedOptions[0].textContent === "Local";
+    const isLocal = e.target.selectedOptions[0].textContent === 'Local';
 
     selectTransporte.required = !isLocal;
-    selectTransporte.parentElement.classList.toggle("hide", isLocal);
+    selectTransporte.parentElement.classList.toggle('hide', isLocal);
     if (isLocal) selectTransporte.options[0].selected = true;
   },
   { passive: true }
@@ -27,43 +27,49 @@ form.addEventListener('submit', (e) => {
 
 function authenticate() {
   return gapi.auth2.getAuthInstance()
-    .signIn({ scope: "https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file" })
-    .then(function() { console.log("Sign-in successful"); },
-      function(err) { console.error("Error signing in", err); });
+    .signIn({ scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive' })
+    .then(function() { console.log('Sign-in successful'); },
+      function(err) { console.error('Error signing in', err); });
 }
 function loadClient() {
   gapi.client.setApiKey(process.env.APIKEY);
-  return gapi.client.load("https://docs.googleapis.com/$discovery/rest?version=v1")
-    .then(function() { console.log("GAPI client loaded for API"); },
-      function(err) { console.error("Error loading GAPI client for API", err); });
+  return gapi.client.load('https://docs.googleapis.com/$discovery/rest?version=v1')
+    .then(function() { console.log('GAPI client loaded for API'); },
+      function(err) { console.error('Error loading GAPI client for API', err); });
 }
 // Make sure the client is loaded and sign-in is complete before calling this method.
 function execute(title, body) {
 
   let copy = gapi.client.drive.files.copy({
-    "fileId": process.env.MODELID,
-    "resource": {}
+    'fileId': process.env.MODELID,
+    'resource': {}
   });
 
-  function renameRequest() {
-    const init = {
-      method: 'PATCH',
-      headers: {
-        "Authorization": `Bearer  [YOUR_ACCESS_TOKEN]`,
-      }
-    }
-  }
   let id = copy.id
+  
+  gapi.client.request({
+    'path': 'https://www.googleapis.com/drive/v3/files/' + id + '?key=' + process.env.APIKEY,
+    'method': 'PATCH',
+    'headers': {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + process.env.APICLIENT,
+    },
+    'data': {
+      'name': title
+    }
+  });
+  
   return gapi.client.docs.documents.batchUpdate({
-    "documentId": id,
-    "resource": {}
+    'documentId': id,
+    'resource': {}
   })
     .then(function(response) {
       // Handle the results here (response.result has the parsed body).
-      console.log("Response", response);
+      console.log('Response', response);
     },
-      function(err) { console.error("Execute error", err); });
+      function(err) { console.error('Execute error', err); });
 }
-gapi.load("client:auth2", function() {
+gapi.load('client:auth2', function() {
   gapi.auth2.init({ client_id: process.env.APICLIENT });
 });
