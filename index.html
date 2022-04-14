@@ -8,41 +8,6 @@
   <title>Static Template</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://apis.google.com/js/api.js"></script>
-  <script>
-    /**
-     * Sample JavaScript code for docs.documents.create
-     * See instructions for running APIs Explorer code samples locally:
-     * https://developers.google.com/explorer-help/code-samples#javascript
-     */
-    function authenticate() {
-      return gapi.auth2.getAuthInstance()
-        .signIn({ scope: "https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file" })
-        .then(function () { console.log("Sign-in successful"); },
-          function (err) { console.error("Error signing in", err); });
-    }
-    function loadClient() {
-      gapi.client.setApiKey("AIzaSyAVyCKXswoOC-JM_bc8uILkHyAebDz5bLg");
-      return gapi.client.load("https://docs.googleapis.com/$discovery/rest?version=v1")
-        .then(function () { console.log("GAPI client loaded for API"); },
-          function (err) { console.error("Error loading GAPI client for API", err); });
-    }
-    // Make sure the client is loaded and sign-in is complete before calling this method.
-    function execute(title) {
-      return gapi.client.docs.documents.create({
-        "resource": {
-          "title": title
-        }
-      })
-        .then(function (response) {
-          // Handle the results here (response.result has the parsed body).
-          console.log("Response", response);
-        },
-          function (err) { console.error("Execute error", err); });
-    }
-    gapi.load("client:auth2", function () {
-      gapi.auth2.init({ client_id: "921739400001-b0pee66k2t6d4ngjfdm186h64ns2fisl.apps.googleusercontent.com" });
-    }); 
-  </script>
   <script src="script.js" type=module></script>
 </head>
 
@@ -108,7 +73,6 @@
         </label>
 
       </fieldset>
-      <button type= "button" onclick="authenticate().then(loadClient)">Autenticar</button>
       <button type="submit" name="submit">Gerar Orçamento</button>
     </form>
   </main>
