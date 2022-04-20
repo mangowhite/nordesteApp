@@ -20,14 +20,23 @@
       </h1>
     </header>
     <form id="form">
+
+      <label for="select-mudanca">Tipo de Mudança</label>
+      <select id="select-mudanca" name="mudanca" required>
+        <option disabled></option>
+        <option>Exclusiva</option>
+        <option>Compartilhada</option>
+        <option selected>Local</option>
+      </select>
+
       <label for="input-nome">Nome do Cliente</label>
       <input id="input-nome" name="nome" required />
 
-      <label for="input-destino">Destino</label>
-      <input id="input-destino" name="destino" required />
+      <label for="input-destino" class="input-hide">Destino</label>
+      <input id="input-destino" name="destino" class="input-hide" />
 
-      <label for="input-origem">Origem</label>
-      <input id="input-origem" name="origem" required />
+      <label for="input-origem" class="input-hide">Origem</label>
+      <input id="input-origem" name="origem" class="input-hide" />
 
       <label for="input-numero">Número (Opcional)</label>
       <input id="input-numero" name="numero" />
@@ -37,14 +46,6 @@
 
       <label for="input-valor">Valor em R$</label>
       <input id="input-valor" name="valor" required />
-
-      <label for="select-mudanca">Tipo de Mudança</label>
-      <select id="select-mudanca" name="mudanca" required>
-        <option selected disabled></option>
-        <option>Exclusiva</option>
-        <option>Compartilhada</option>
-        <option>Local</option>
-      </select>
 
       <fieldset class="hide">
         <label for="select-transporte">Tipo de Transporte</label>

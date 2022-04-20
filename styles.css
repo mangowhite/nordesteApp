@@ -90,6 +90,10 @@ form fieldset:first-of-type.hide {
   display: none;
 }
 
+.input-hide {
+  display: none;
+}
+
 form fieldset:last-of-type {
   display: flex;
   justify-content: space-evenly;

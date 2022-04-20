@@ -1,5 +1,6 @@
-// Script to show/hide selector in the form.
+// Script to show/hide selectors in the form.
 const selectTransporte = document.querySelector("#select-transporte");
+const inputHide = document.querySelectorAll(".input-hide")
 document.querySelector("#select-mudanca").addEventListener(
   "change",
   (e) => {
@@ -7,6 +8,8 @@ document.querySelector("#select-mudanca").addEventListener(
 
     selectTransporte.required = !isLocal;
     selectTransporte.parentElement.classList.toggle("hide", isLocal);
+    inputHide.forEach(e => e.classList.toggle("input-hide", isLocal));
+
     if (isLocal) selectTransporte.options[0].selected = true;
   },
   { passive: true }
