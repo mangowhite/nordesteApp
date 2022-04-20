@@ -18,17 +18,6 @@ const APIKEY = 'AIzaSyAt8lfnPF6nwN9a02YWTzHWPQEtuY6ZRBU';
 const CLIENTID = '729387998943-ii34osakf0qqa6qlcvn6f1dq9r5bov9r.apps.googleusercontent.com';
 let MODELID = '1PeiHamkA9BRvEPTeIbQX_cb12UuOdq4wlMZAJfYqJV8';
 
-import * as fs from 'fs';
-
-// Made a fs read operation to fetch all the latest sent files.
-const sentList = fs.readdirSync('H:/Meu Drive/ORÇAMENTOS').filter(file => file.match('ORÇAMENTO'));
-let numbers = [];
-for (each of sentList) {
-  numbers.push(each.match(/\d+/g)[0]);
-}
-numbers.sort((a,b) => a - b);
-const lastSent = parseInt(numbers.slice(-1)) + 1;
-
 // The Google API will be loaded once the windows is started.
 window.addEventListener('load', () => {
   authenticate().then(loadClient);
@@ -40,18 +29,16 @@ form.addEventListener('submit', (e) => {
 
   e.preventDefault();
   const formData = new FormData(form);
-
-  let title = 'ORÇAMENTO ' + lastSent + ' ' +  formData.get('nome') + formData.get('origem') + ' X ' + formData.get('destino');
-  const options = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  }
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }
   const time = new Date().toLocaleString('pt-br', options);
+  let titleObject;
 
   if (formData.get('mudanca') === 'Local') {
 
-    title = 'ORÇAMENTO ' + lastSent + ' — ' + formData.get('nome') + '— LOCAL';
+    titleObject = {
+      cliente: formData.get('nome'),
+      tipo: 'Local'
+    };
 
     const requestArray = [
       formRequest(formData.get('nome'), 'argumento1'),
@@ -59,9 +46,9 @@ form.addEventListener('submit', (e) => {
       formRequest(formData.get('numero'), 'argumento3'),
       formRequest(time, 'argumento4'),
       formRequest(formData.get('valor'), 'argumento5'),
-      formRequest(lastSent, 'argumento6')
+      formRequest(formData.get('localDeEnvio'), 'argumento7')
     ]
-    execute(title, requestArray);
+    execute(titleObject, requestArray);
   }
 });
 
@@ -85,6 +72,7 @@ function formRequest(newText, toReplace) {
   }
   return request
 }
+
 function authenticate() {
   return gapi.auth2.getAuthInstance()
     .signIn({ scope: 'https://www.googleapis.com/auth/documents https://www.googleapis.com/auth/drive' })
@@ -93,28 +81,34 @@ function authenticate() {
 }
 function loadClient() {
   gapi.client.setApiKey(APIKEY);
+  gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v2/rest")
+    .then(function () { console.log("GAPI client loaded for API"); },
+      function (err) { console.error("Error loading GAPI client for API", err); })
   return gapi.client.load('https://docs.googleapis.com/$discovery/rest?version=v1')
     .then(function () { console.log('GAPI client loaded for API'); },
       function (err) { console.error('Error loading GAPI client for API', err); });
 }
 
 function execute(title, requestArray) {
-
   let copy = gapi.client.drive.files.copy({
     'fileId': MODELID,
     'resource': {}
+  }).then((res) => res.result.id);
+
+  const numbers = gapi.client.drive.files.list({
+    "q": "title contains 'ORÇAMENTO'"
+  }).then((res) => {
+    res.result.files
+      .map(item => item.name.match(/\d+/g)[0])
+      .sort((a, b) => a - b);
   });
 
-  gapi.client.request({
-    'path': 'https://www.googleapis.com/drive/v3/files/' + id + '?key=' + APIKEY,
-    'method': 'PATCH',
-    'headers': {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ' + CLIENTID,
-    },
-    'data': {
-      'name': title
+  const lastSent = parseInt(numbers.at(-1), 10) + 1;
+  requestArray.push(formRequest(lastSent, 'argumento6'))
+  gapi.client.drive.files.patch({
+    "fileId": copy,
+    "resource": {
+      "title": 'ORÇAMENTO Nº ' + lastSent + ' | ' + title.cliente + ' | ' + title.tipo
     }
   });
 
@@ -125,7 +119,6 @@ function execute(title, requestArray) {
     }
   })
     .then(function (response) {
-      // Handle the results here (response.result has the parsed body).
       console.log('Response', response);
     },
       function (err) { console.error('Execute error', err); });
