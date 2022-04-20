@@ -86,10 +86,10 @@ function authenticate() {
 function loadClient() {
   gapi.client.setApiKey(APIKEY);
   gapi.client.load("https://content.googleapis.com/discovery/v1/apis/drive/v2/rest")
-    .then(function () { console.log("GAPI client loaded for API"); },
+    .then(function () { console.log("GAPI client loaded for API (DRIVE)"); },
       function (err) { console.error("Error loading GAPI client for API", err); })
   return gapi.client.load("https://docs.googleapis.com/$discovery/rest?version=v1")
-    .then(function () { console.log("GAPI client loaded for API"); },
+    .then(function () { console.log("GAPI client loaded for API (DOCS)"); },
       function (err) { console.error("Error loading GAPI client for API", err); });
 }
 
