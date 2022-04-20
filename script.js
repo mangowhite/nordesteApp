@@ -113,7 +113,7 @@ async function execute(title, requestArray) {
   gapi.client.drive.files.patch({
     "fileId": await copy,
     "resource": {
-      "title": "ORÇAMENTO Nº " + lastSent + " | " + title.cliente + " | " + title.tipo
+      "title": "ORÇAMENTO " + lastSent + " - " + title.cliente + " - " + title.tipo
     }
   })
     .then(function (response) {
